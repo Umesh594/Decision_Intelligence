@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: decision-simulator
+  namespace: decision-simulator
+spec:
+  rules:
+    - host: decision-simulator.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: decision-simulator-frontend
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: decision-simulator-backend
+                port:
+                  number: 8080
+          - path: /swagger-ui
+            pathType: Prefix
+            backend:
+              service:
+                name: decision-simulator-backend
+                port:
+                  number: 8080

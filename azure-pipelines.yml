@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  javaVersion: '17'
+
+stages:
+  - stage: Validate
+    jobs:
+      - job: Backend
+        steps:
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: $(javaVersion)
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+          - task: Maven@4
+            inputs:
+              mavenPomFile: backend/pom.xml
+              goals: test
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+      - job: Frontend
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '24.x'
+          - script: npm install
+            workingDirectory: frontend
+          - script: npm run build
+            workingDirectory: frontend
+
+  - stage: Containerize
+    dependsOn: Validate
+    jobs:
+      - job: Docker
+        steps:
+          - script: docker build -t decision-simulation-backend:$(Build.BuildId) backend
+          - script: docker build -t decision-simulation-frontend:$(Build.BuildId) frontend

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decision-simulator-frontend
+  namespace: decision-simulator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: decision-simulator-frontend
+  template:
+    metadata:
+      labels:
+        app: decision-simulator-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: decision-simulation-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decision-simulator-frontend
+  namespace: decision-simulator
+spec:
+  selector:
+    app: decision-simulator-frontend
+  ports:
+    - port: 80
+      targetPort: 80

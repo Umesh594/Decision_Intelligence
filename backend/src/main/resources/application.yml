@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: decision-simulation-engine
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/decision_simulator}
+    username: ${DATABASE_USERNAME:decision}
+    password: ${DATABASE_PASSWORD:decision}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cache:
+    type: redis
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  api-key: ${APP_API_KEY:local-dev-key}
+  groq:
+    api-key: ${GROQ_API_KEY:}
+    model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+  integrations:
+    jira-base-url: ${JIRA_BASE_URL:}
+    jira-email: ${JIRA_EMAIL:}
+    jira-api-token: ${JIRA_API_TOKEN:}
+    azure-devops-org-url: ${AZURE_DEVOPS_ORG_URL:}
+    azure-devops-pat: ${AZURE_DEVOPS_PAT:}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
