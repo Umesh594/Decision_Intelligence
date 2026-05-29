@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: decision_simulator
+      POSTGRES_USER: decision
+      POSTGRES_PASSWORD: decision
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U decision -d decision_simulator"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      APP_API_KEY: ${APP_API_KEY:-local-dev-key}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      DATABASE_URL: jdbc:postgresql://postgres:5432/decision_simulator
+      DATABASE_USERNAME: decision
+      DATABASE_PASSWORD: decision
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JIRA_BASE_URL: ${JIRA_BASE_URL:-}
+      JIRA_EMAIL: ${JIRA_EMAIL:-}
+      JIRA_API_TOKEN: ${JIRA_API_TOKEN:-}
+      AZURE_DEVOPS_ORG_URL: ${AZURE_DEVOPS_ORG_URL:-}
+      AZURE_DEVOPS_PAT: ${AZURE_DEVOPS_PAT:-}
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ""
+        VITE_API_KEY: ${APP_API_KEY:-local-dev-key}
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
