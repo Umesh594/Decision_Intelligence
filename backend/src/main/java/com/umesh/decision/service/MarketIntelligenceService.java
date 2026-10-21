@@ -9,6 +9,21 @@ import java.util.Locale;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
+/**
+ * Produces an estimated compensation band and recommended {@link CalibrationProfile} for a given
+ * role / location / company tier / skill set.
+ *
+ * <p><b>Deliberate simplification:</b> the role salary bands, city multipliers and skill-demand
+ * weights below are a static, hand-curated India-tech baseline dataset, not output from a trained
+ * model or a live labor-market data provider. {@code dataSources} on the response intentionally
+ * advertises this ("seed:*" entries, "external-provider-ready") rather than claiming a live feed.
+ * Wiring in a real market-data API (e.g. Levels.fyi, Glassdoor, a BLS-style dataset) is the
+ * natural next step; the {@code external-provider-ready} tag marks the seam where that provider
+ * would be injected behind this service's existing interface. This dataset is kept in code
+ * (unlike {@link CalibrationService}'s tables, which were externalized to
+ * {@code app.calibration.*}) because it is read-only reference data consumed by a single
+ * non-critical advisory endpoint, not a parameter of the core simulation engine.
+ */
 @Service
 public class MarketIntelligenceService {
     private static final Map<String, SalaryBand> ROLE_BANDS = Map.ofEntries(

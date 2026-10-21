@@ -42,6 +42,72 @@ app:
     jira-api-token: ${JIRA_API_TOKEN:}
     azure-devops-org-url: ${AZURE_DEVOPS_ORG_URL:}
     azure-devops-pat: ${AZURE_DEVOPS_PAT:}
+  simulation:
+    # Worker pool sized to available cores by default; override to cap CPU usage per instance.
+    worker-threads: ${SIMULATION_WORKER_THREADS:}
+    executor-queue-capacity: ${SIMULATION_QUEUE_CAPACITY:64}
+    batch-size: ${SIMULATION_BATCH_SIZE:500}
+    wave-size: ${SIMULATION_WAVE_SIZE:}
+    min-batches-before-convergence-check: ${SIMULATION_MIN_BATCHES:4}
+    convergence-ci-half-width-threshold-pct: ${SIMULATION_CONVERGENCE_THRESHOLD_PCT:0.5}
+    reservoir-size: ${SIMULATION_RESERVOIR_SIZE:8000}
+    batch-timeout-seconds: ${SIMULATION_BATCH_TIMEOUT_SECONDS:30}
+  calibration:
+    default-city-cost-index: 1.0
+    default-emergency-fund-score: 0.45
+    city-cost-index:
+      bangalore: 1.18
+      bengaluru: 1.18
+      hyderabad: 1.08
+      pune: 1.05
+      mumbai: 1.28
+      delhi: 1.16
+      gurgaon: 1.18
+      chennai: 1.02
+      nagpur: 0.86
+      remote: 0.92
+    role-level-interview-conversion:
+      intern: 0.12
+      fresher: 0.12
+      junior: 0.18
+      mid: 0.22
+      senior: 0.16
+      default: 0.18
+    role-level-growth:
+      intern: 0.20
+      fresher: 0.20
+      junior: 0.16
+      mid: 0.12
+      senior: 0.09
+      default: 0.13
+    market-demand-volatility:
+      low: 0.10
+      medium: 0.14
+      high: 0.18
+      very_high: 0.22
+      default: 0.14
+    market-demand-skill-demand:
+      low: 0.35
+      medium: 0.60
+      high: 0.78
+      very_high: 0.88
+      default: 0.60
+    company-tier-multiplier:
+      tier_1: 1.24
+      faang: 1.24
+      top: 1.24
+      tier_2: 1.10
+      product: 1.10
+      tier_3: 0.96
+      service: 0.96
+      startup: 1.14
+      default: 1.0
+    market-demand-multiplier:
+      low: 0.82
+      medium: 1.0
+      high: 1.16
+      very_high: 1.28
+      default: 1.0
 
 springdoc:
   swagger-ui:

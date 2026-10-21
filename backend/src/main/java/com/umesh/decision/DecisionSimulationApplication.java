@@ -7,14 +7,12 @@ import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoCo
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(exclude = {
         UserDetailsServiceAutoConfiguration.class,
         RedisRepositoriesAutoConfiguration.class
 })
 @EnableCaching
-@EnableAsync
 @EnableConfigurationProperties(AppProperties.class)
 public class DecisionSimulationApplication {
 

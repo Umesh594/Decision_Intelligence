@@ -68,6 +68,15 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
+            <!-- Well-tested Sobol low-discrepancy sequence generator and normal inverse-CDF
+                 (probit) transform used by the quasi-random Monte Carlo engine. Used instead of
+                 hand-rolled direction numbers to avoid reimplementing numerically fragile
+                 quasi-random generators from scratch. -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.6.0</version>

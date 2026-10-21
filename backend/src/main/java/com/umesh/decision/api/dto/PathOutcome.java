@@ -16,6 +16,8 @@ public record PathOutcome(
         double resilienceScore,
         double upsideScore,
         double confidenceScore,
-        List<Double> medianSalaryByYear
+        List<Double> medianSalaryByYear,
+        long completedIterations,
+        boolean convergedEarly
 ) {
 }

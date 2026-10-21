@@ -1,20 +1,22 @@
 package com.umesh.decision.service;
 
 import com.umesh.decision.config.AppProperties;
-import java.util.Base64;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.reactive.function.client.WebClient;
 
+/**
+ * Reports whether a JIRA integration is configured. The project does not create or sync JIRA
+ * issues from a simulation (there is no product requirement driving that yet); this is
+ * deliberately limited to a configuration health check rather than carrying a half-built,
+ * never-invoked issue-creation code path.
+ */
 @Service
 public class JiraIntegrationService {
     private final AppProperties appProperties;
-    private final WebClient webClient;
 
-    public JiraIntegrationService(AppProperties appProperties, WebClient webClient) {
+    public JiraIntegrationService(AppProperties appProperties) {
         this.appProperties = appProperties;
-        this.webClient = webClient;
     }
 
     public Map<String, Object> health() {
@@ -24,29 +26,5 @@ public class JiraIntegrationService {
                 && StringUtils.hasText(integrations.jiraEmail())
                 && StringUtils.hasText(integrations.jiraApiToken());
         return Map.of("system", "jira", "configured", configured);
-    }
-
-    public String createDecisionIssue(String projectKey, String summary, String description) {
-        var integrations = appProperties.integrations();
-        if (integrations == null || !StringUtils.hasText(integrations.jiraBaseUrl())) {
-            throw new IllegalStateException("JIRA integration is not configured.");
-        }
-        String token = Base64.getEncoder()
-                .encodeToString((integrations.jiraEmail() + ":" + integrations.jiraApiToken()).getBytes());
-        Map<String, Object> body = Map.of(
-                "fields", Map.of(
-                        "project", Map.of("key", projectKey),
-                        "summary", summary,
-                        "description", description,
-                        "issuetype", Map.of("name", "Task")
-                )
-        );
-        return webClient.post()
-                .uri(integrations.jiraBaseUrl() + "/rest/api/2/issue")
-                .header("Authorization", "Basic " + token)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
     }
 }
